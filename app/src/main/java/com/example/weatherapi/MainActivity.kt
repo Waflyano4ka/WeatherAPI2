@@ -3,6 +3,9 @@ package com.example.weatherapi
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SearchView
+import androidx.fragment.app.Fragment
+import com.example.weatherapi.fragments.AddFragment
+import com.example.weatherapi.fragments.WeatherFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -10,16 +13,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Search.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                var request = GetWeatherData()
-                var dataWeather = request.GetRequest("http://api.openweathermap.org/data/2.5/weather?q=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&units=metric&appid=918c0ad6a6ed19ef0077f927868d3327")
-                ErrorString.text = dataWeather.name
-                return false
+        val addFragment = AddFragment()
+        val weatherFragment = WeatherFragment()
+
+        makeCurrentFragment(addFragment)
+
+        bottom_navigation.setOnNavigationItemSelectedListener{
+            when (it.itemId){
+                R.id.ic_add -> makeCurrentFragment(addFragment)
+                R.id.ic_weather -> makeCurrentFragment(weatherFragment)
             }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
-            }
-        })
+            true
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fl_wrapper, fragment)
+            commit()
+        }
     }
 }
