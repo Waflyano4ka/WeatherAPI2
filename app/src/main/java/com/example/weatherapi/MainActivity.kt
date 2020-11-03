@@ -17,7 +17,9 @@ class MainActivity : AppCompatActivity() {
                 ErrorString.text = dataWeather.name
                 return false
             }
-
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
         })
     }
 }
