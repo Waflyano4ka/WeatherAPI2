@@ -5,7 +5,7 @@ import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 
-class GetWeatherData {
+class GetWeather {
     fun GetRequest(URL: String): DataWeather{
         var request: Request = Request.Builder().url(URL).build()
         var okHttpClient: OkHttpClient = OkHttpClient()

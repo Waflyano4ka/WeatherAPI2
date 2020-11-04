@@ -8,10 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weatherapi.DataWeather
-import com.example.weatherapi.DetailActivity
-import com.example.weatherapi.ItemAdapter
-import com.example.weatherapi.R
+import com.example.weatherapi.*
 
 
 class WeatherFragment : Fragment() {
@@ -27,16 +24,18 @@ class WeatherFragment : Fragment() {
         RecyclerView.layoutManager = LinearLayoutManager(getActivity());
         RecyclerView.setHasFixedSize(true)
 
-        var imageList: ArrayList<DataWeather> = ArrayList<DataWeather>()
-        imageList.add(DataWeather(0.0, 10.0, 0.0, 0.0, 0, 0, 0, 0, 0, "", "Moscow"))
-        imageList.add(DataWeather(0.0, -4.0, 0.0, 0.0, 0, 0, 0, 0, 0, "", "London"))
-        imageList.add(DataWeather(0.0, 5.0, 0.0, 0.0, 0, 0, 0, 0, 0, "", "Berlin"))
+        var weatherList: ArrayList<DataWeather> = ArrayList<DataWeather>()
+        var getWeatherData : Weather = MainActivity()
+        weatherList = getWeatherData.GetWeatherData()
 
-        RecyclerView.adapter = ItemAdapter(context, imageList){
+        RecyclerView.adapter = ItemAdapter(context, weatherList){
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra("OBJECT_INTENT", it)
             startActivity(intent)
         }
         return view
     }
+}
+interface Weather {
+    fun GetWeatherData() : ArrayList<DataWeather>
 }
