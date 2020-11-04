@@ -1,5 +1,6 @@
 package com.example.weatherapi.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,30 +16,44 @@ import java.io.IOException
 
 
 class WeatherFragment : Fragment() {
+    private lateinit var mainView: View
+    private lateinit var recyclerView: RecyclerView
+    private var mainContext: Context? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        var view = inflater.inflate(R.layout.fragment_weather, container, false)
-        var RecyclerView: RecyclerView = (view.findViewById(R.id.recycleView) as RecyclerView)
+        mainView = inflater.inflate(R.layout.fragment_weather, container, false)
+        mainContext = context
+        return mainView
+    }
 
-        RecyclerView.layoutManager = LinearLayoutManager(getActivity());
-        RecyclerView.setHasFixedSize(true)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        recyclerView = mainView.findViewById<RecyclerView>(R.id.recycleView)
 
+        recyclerView.setHasFixedSize(true)
+        loadData()
+    }
+
+    fun loadData() {
         var weatherList: ArrayList<DataWeather> = ArrayList<DataWeather>()
-        var getWeatherData : Weather = MainActivity()
+        var getWeatherData: Weather = MainActivity()
 
-        var request: Request = Request.Builder().url("https://api.openweathermap.org/data/2.5/weather?q=London&appid=918c0ad6a6ed19ef0077f927868d3327").build()
+        var request: Request = Request.Builder()
+            .url("https://api.openweathermap.org/data/2.5/weather?q=London&appid=918c0ad6a6ed19ef0077f927868d3327")
+            .build()
         var okHttpClient: OkHttpClient = OkHttpClient()
 
-        var dataWeather = DataWeather(0.0,0.0,0.0,0.0,0,0,0,0,0,"","null")
+        var dataWeather = DataWeather(0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, "", "null")
 
-        okHttpClient.newCall(request).enqueue(object: Callback {
+        okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                dataWeather = DataWeather(0.0,0.0,0.0,0.0,0,0,0,0,0,"","Error")
+                dataWeather = DataWeather(0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, "", "Error")
             }
+
             override fun onResponse(call: Call, response: Response) {
                 val json = JSONObject(response!!.body!!.string())
                 var jsonMain = json.getJSONObject("main")
@@ -57,19 +72,37 @@ class WeatherFragment : Fragment() {
 
                 var clouds: String = json.getJSONObject("clouds").toString()
                 var name: String = json.getString("name")
-
-                weatherList.add(DataWeather(temp, feels_like, temp_min, temp_max, pressure, humidity, visibility, wind_speed, wind_deg, clouds, name))
-
-                RecyclerView.adapter = ItemAdapter(context, weatherList){
-                    val intent = Intent(context, DetailActivity::class.java)
-                    intent.putExtra("OBJECT_INTENT", it)
-                    startActivity(intent)
+                weatherList.add(
+                    DataWeather(
+                        temp,
+                        feels_like,
+                        temp_min,
+                        temp_max,
+                        pressure,
+                        humidity,
+                        visibility,
+                        wind_speed,
+                        wind_deg,
+                        clouds,
+                        name
+                    )
+                )
+                activity?.runOnUiThread {
+                    recyclerView.adapter = ItemAdapter(mainContext, weatherList) {
+                        val intent = Intent(mainContext, DetailActivity::class.java)
+                        intent.putExtra("OBJECT_INTENT", it)
+                        startActivity(intent)
+                    }
                 }
+
+
             }
         })
-        return view
+
     }
 }
+
+
 interface Weather {
-    fun GetWeatherData() : ArrayList<DataWeather>
+    fun GetWeatherData(): ArrayList<DataWeather>
 }
