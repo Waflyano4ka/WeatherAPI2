@@ -46,16 +46,22 @@ class MainActivity : AppCompatActivity(), Weather, City {
         return source
     }
 
-    override fun GetWeatherData(): ArrayList<String> {
+    fun LoadData(): ArrayList<DataCity>{
         var sPref = getPreferences(MODE_PRIVATE)
         var gson = Gson()
         var json = sPref.getString("DATA_CITY", null)
         var type = object : TypeToken<List<DataCity>>() {}.type
-        var cityList: ArrayList<DataCity> = ArrayList<DataCity>()
-        cityList = gson.fromJson(json, type)
+        if (json == null){
+            return ArrayList<DataCity>()
+        }
+        else{
+            return gson.fromJson(json, type)
+        }
+    }
 
+    override fun GetWeatherData(): ArrayList<String> {
         var urlArray = ArrayList<String>()
-        for (city in cityList) {
+        for (city in LoadData()) {
             urlArray.add(GetSource(city.name, "metric"))
         }
         return urlArray
@@ -68,5 +74,9 @@ class MainActivity : AppCompatActivity(), Weather, City {
         var json = gson.toJson(cityList)
         ed.putString("DATA_CITY", json)
         ed.apply()
+    }
+
+    override fun DataCityLoad(): ArrayList<DataCity> {
+        return LoadData()
     }
 }

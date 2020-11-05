@@ -39,7 +39,7 @@ class WeatherFragment : Fragment() {
 
         weatherList.clear()
 
-        var getWeatherData: Weather = MainActivity()
+        var getWeatherData: Weather = activity as MainActivity
 
         for(url in getWeatherData.GetWeatherData()){
             loadData(url)

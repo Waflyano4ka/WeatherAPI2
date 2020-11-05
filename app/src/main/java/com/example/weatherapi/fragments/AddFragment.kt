@@ -18,7 +18,10 @@ class AddFragment : Fragment() {
     private lateinit var viewMain: View
     private lateinit var searchView: SearchView
     private lateinit var listOfTheCities: LinearLayout
+    lateinit var getCityData: City
     private var mainContext: Context? = null
+
+    var cityList: ArrayList<DataCity> = ArrayList<DataCity>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +38,12 @@ class AddFragment : Fragment() {
 
         searchView = viewMain.findViewById<SearchView>(R.id.SearchCity)
         listOfTheCities = viewMain.findViewById<LinearLayout>(R.id.ListOfTheCities)
+
+        getCityData = activity as MainActivity
+        cityList = getCityData.DataCityLoad()
+        for (city in cityList){
+            AddCityInList(city.name, city.id)
+        }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -76,7 +85,11 @@ class AddFragment : Fragment() {
                         builder.setMessage("Do you want to add " + name + " to the list?")
                         builder.setPositiveButton("Yes") { dialog, witch ->
                             Toast.makeText(mainContext, "You have added a city", Toast.LENGTH_SHORT).show()
-                            AddCityInList(name)
+                            var maxId = CheckId()
+                            cityList.add(DataCity(maxId, name))
+                            AddCityInList(name, maxId)
+
+                            getCityData.DataCitySave(cityList)
                         }
                         builder.setNeutralButton("Cancel") { dialog, witch ->
                             Toast.makeText(mainContext, "Cancel", Toast.LENGTH_SHORT).show()
@@ -90,9 +103,7 @@ class AddFragment : Fragment() {
         })
     }
 
-    var cityList: ArrayList<DataCity> = ArrayList<DataCity>()
-
-    private fun AddCityInList(name: String){
+    private fun CheckId(): Int{
         var largestElement: Int
 
         if (cityList.isEmpty()){
@@ -107,9 +118,10 @@ class AddFragment : Fragment() {
             }
             largestElement++
         }
+        return largestElement
+    }
 
-        cityList.add(DataCity(largestElement, name))
-
+    private fun AddCityInList(name: String, largestElement: Int){
         var list = LinearLayout(mainContext)
         list.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -140,13 +152,12 @@ class AddFragment : Fragment() {
             }
             cityList.removeAt(delete)
             listOfTheCities.removeView(list)
+
+            getCityData.DataCitySave(cityList)
         }
         list.addView(deleteButton)
 
         listOfTheCities.addView(list)
-
-        var getCityData: City = MainActivity()
-        getCityData.DataCitySave(cityList)
     }
 
     private fun GetSource(city: String?, units: String): String{
@@ -159,4 +170,5 @@ class AddFragment : Fragment() {
 
 interface City{
     fun DataCitySave(cityList: ArrayList<DataCity>)
+    fun DataCityLoad(): ArrayList<DataCity>
 }
