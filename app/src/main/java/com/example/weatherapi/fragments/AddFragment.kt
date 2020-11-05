@@ -13,7 +13,6 @@ import com.example.weatherapi.*
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
-import java.lang.Exception
 
 class AddFragment : Fragment() {
     private lateinit var viewMain: View
@@ -145,6 +144,9 @@ class AddFragment : Fragment() {
         list.addView(deleteButton)
 
         listOfTheCities.addView(list)
+
+        var getCityData: City = MainActivity()
+        getCityData.DataCitySave(cityList)
     }
 
     private fun GetSource(city: String?, units: String): String{
@@ -156,5 +158,5 @@ class AddFragment : Fragment() {
 }
 
 interface City{
-    fun DataCitySave(cityList: DataCity)
+    fun DataCitySave(cityList: ArrayList<DataCity>)
 }
