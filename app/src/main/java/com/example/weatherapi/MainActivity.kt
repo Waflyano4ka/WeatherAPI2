@@ -6,15 +6,18 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapi.fragments.AddFragment
+import com.example.weatherapi.fragments.City
 import com.example.weatherapi.fragments.Weather
 import com.example.weatherapi.fragments.WeatherFragment
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_weather.*
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+import com.google.gson.reflect.TypeToken
 
-class MainActivity : AppCompatActivity(), Weather {
+class MainActivity : AppCompatActivity(), Weather, City {
     var weatherList: ArrayList<DataWeather> = ArrayList<DataWeather>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,11 +53,26 @@ class MainActivity : AppCompatActivity(), Weather {
     }
 
     override fun GetWeatherData(): ArrayList<String> {
+        var sPref = getPreferences(MODE_PRIVATE)
+        var gson = Gson()
+        var json = sPref.getString("DATA_CITY", null)
+        var type = object : TypeToken<List<DataCity>>() {}.type
+        var cityList: ArrayList<DataCity> = ArrayList<DataCity>()
+        cityList = gson.fromJson(json, type)
+
         var urlArray = ArrayList<String>()
-        urlArray.add(GetSource("Moscow","metric"))
-        urlArray.add(GetSource("St. Petersburg","metric"))
-        urlArray.add(GetSource("Kazan","metric"))
-        urlArray.add(GetSource("Vladivostok","metric"))
+        for (city in cityList) {
+            urlArray.add(GetSource(city.name, "metric"))
+        }
         return urlArray
+    }
+
+    override fun DataCitySave(cityList: DataCity) {
+        var sPref = getPreferences(MODE_PRIVATE)
+        var ed = sPref.edit()
+        var gson = Gson()
+        var json = gson.toJson(cityList)
+        ed.putString("DATA_CITY", json)
+        ed.apply()
     }
 }

@@ -18,3 +18,9 @@ data class DataWeather (
     var clouds: String,
     var name: String
 ): Parcelable
+
+@Parcelize
+data class DataCity (
+    var id: Int,
+    var name: String
+): Parcelable
