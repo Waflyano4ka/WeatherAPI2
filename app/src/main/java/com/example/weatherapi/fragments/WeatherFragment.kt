@@ -3,6 +3,7 @@ package com.example.weatherapi.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,32 +31,36 @@ class WeatherFragment : Fragment() {
         return mainView
     }
 
+    var weatherList: ArrayList<DataWeather> = ArrayList<DataWeather>()
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         recyclerView = mainView.findViewById<RecyclerView>(R.id.recycleView)
-
         recyclerView.setHasFixedSize(true)
-        loadData()
-    }
 
-    fun loadData() {
-        var weatherList: ArrayList<DataWeather> = ArrayList<DataWeather>()
+        weatherList.clear()
+
         var getWeatherData: Weather = MainActivity()
 
+        for(url in getWeatherData.GetWeatherData()){
+            loadData(url)
+        }
+    }
+
+    fun loadData(URL: String) {
         var request: Request = Request.Builder()
-            .url("https://api.openweathermap.org/data/2.5/weather?q=London&appid=918c0ad6a6ed19ef0077f927868d3327")
+            .url(URL)
             .build()
         var okHttpClient: OkHttpClient = OkHttpClient()
 
-        var dataWeather = DataWeather(0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, "", "null")
-
         okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                dataWeather = DataWeather(0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, "", "Error")
+                Log.e("Error", e.toString())
             }
 
             override fun onResponse(call: Call, response: Response) {
                 val json = JSONObject(response!!.body!!.string())
+
                 var jsonMain = json.getJSONObject("main")
                 var temp: Double = jsonMain.getDouble("temp")
                 var feels_like: Double = jsonMain.getDouble("feels_like")
@@ -72,6 +77,7 @@ class WeatherFragment : Fragment() {
 
                 var clouds: String = json.getJSONObject("clouds").toString()
                 var name: String = json.getString("name")
+
                 weatherList.add(
                     DataWeather(
                         temp,
@@ -94,15 +100,11 @@ class WeatherFragment : Fragment() {
                         startActivity(intent)
                     }
                 }
-
-
             }
         })
-
     }
 }
 
-
 interface Weather {
-    fun GetWeatherData(): ArrayList<DataWeather>
+    fun GetWeatherData(): ArrayList<String>
 }
