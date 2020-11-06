@@ -1,15 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MainFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.AccurateWeatherFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/Text"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/ImageSun"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentEnd="true"
+            android:src="?attr/selectableItemBackground" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                style="@style/NameCityStyle"/>
+
+            <TextView
+                android:id="@+id/Degrees"
+                android:textSize="65sp"
+                android:layout_width="wrap_content"
+                android:layout_height="90dp"
+                android:layout_below="@+id/Name"
+                android:textColor="#0a0a0a"
+                android:text="-00.0°" />
+
+            <TextView
+                android:id="@+id/MainFirst"
+                style="@style/Temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_below="@+id/Name"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="45dp"
+                android:layout_toEndOf="@+id/Degrees"
+                android:text="Thunderstorm \n-10/-12°C"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/Params"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Degrees"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/PressureT"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pressure" />
+
+                <TextView
+                    android:id="@+id/HumidityT"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Humidity" />
+
+                <TextView
+                    android:id="@+id/VisibilityT"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Visibility" />
+
+                <TextView
+                    android:id="@+id/WindSpeedT"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="WindSpeed" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/Params"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/Pressure"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="Pressure" />
+
+                <TextView
+                    android:id="@+id/Humidity"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="Humidity" />
+
+                <TextView
+                    android:id="@+id/Visibility"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="Visibility" />
+
+                <TextView
+                    android:id="@+id/WindSpeed"
+                    style="@style/Params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="WindSpeed" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/Phrase"
+                android:layout_marginTop="10dp"
+                android:textColor="#1A1A1A"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Params"
+                android:text="Phrase" />
+        </RelativeLayout>
+    </RelativeLayout>
 </FrameLayout>
