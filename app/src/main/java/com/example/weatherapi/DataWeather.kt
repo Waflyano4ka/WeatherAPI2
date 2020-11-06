@@ -15,7 +15,10 @@ data class DataWeather (
     var visibility: Int,
     var wind_speed: Int,
     var wind_deg: Int,
-    var clouds: String,
+    var weather_id: Int,
+    var weather_main: String,
+    var weather_description: String,
+    var weather_icon: String,
     var name: String
 ): Parcelable
 

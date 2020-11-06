@@ -16,6 +16,7 @@ import java.io.IOException
 
 
 class WeatherFragment : Fragment() {
+    private lateinit var communicator: Communicator
     private lateinit var mainView: View
     private lateinit var recyclerView: RecyclerView
     private var mainContext: Context? = null
@@ -24,9 +25,11 @@ class WeatherFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         mainView = inflater.inflate(R.layout.fragment_weather, container, false)
         mainContext = context
+
+        communicator = activity as MainActivity
+
         return mainView
     }
 
@@ -74,7 +77,13 @@ class WeatherFragment : Fragment() {
                 var wind_speed: Int = jsonWind.getInt("speed")
                 var wind_deg: Int = jsonWind.getInt("deg")
 
-                var clouds: String = json.getJSONObject("clouds").toString()
+                var jsonArrayWeather = json.getJSONArray("weather")
+                var jsonObjectWeather = jsonArrayWeather.optJSONObject(0)
+                var weather_id: Int = jsonObjectWeather.getInt("id")
+                var weather_main: String = jsonObjectWeather.getString("main")
+                var weather_description: String = jsonObjectWeather.getString("description")
+                var weather_icon: String = jsonObjectWeather.getString("icon")
+
                 var name: String = json.getString("name")
 
                 weatherList.add(
@@ -88,15 +97,21 @@ class WeatherFragment : Fragment() {
                         visibility,
                         wind_speed,
                         wind_deg,
-                        clouds,
+                        weather_id,
+                        weather_main,
+                        weather_description,
+                        weather_icon,
                         name
                     )
                 )
                 activity?.runOnUiThread {
                     recyclerView.adapter = ItemAdapter(mainContext, weatherList) {
+                        /*
                         val intent = Intent(mainContext, DetailActivity::class.java)
                         intent.putExtra("OBJECT_INTENT", it)
                         startActivity(intent)
+                         */
+                        communicator.PassData(it)
                     }
                 }
             }

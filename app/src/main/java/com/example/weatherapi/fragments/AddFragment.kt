@@ -84,10 +84,23 @@ class AddFragment : Fragment() {
                         val builder = AlertDialog.Builder(mainContext)
                         builder.setMessage("Do you want to add " + name + " to the list?")
                         builder.setPositiveButton("Yes") { dialog, witch ->
-                            Toast.makeText(mainContext, "You have added a city", Toast.LENGTH_SHORT).show()
-                            var maxId = CheckId()
-                            cityList.add(DataCity(maxId, name))
-                            AddCityInList(name, maxId)
+                            var notExist = true
+
+                            for(list in cityList){
+                                if (name == list.name){
+                                    notExist = false
+                                }
+                            }
+
+                            if (notExist){
+                                Toast.makeText(mainContext, "You have added a city", Toast.LENGTH_SHORT).show()
+                                var maxId = CheckId()
+                                cityList.add(DataCity(maxId, name))
+                                AddCityInList(name, maxId)
+                            }
+                            else{
+                                Toast.makeText(mainContext, "This city has already been added", Toast.LENGTH_SHORT).show()
+                            }
 
                             getCityData.DataCitySave(cityList)
                         }

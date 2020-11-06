@@ -3,15 +3,12 @@ package com.example.weatherapi
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.example.weatherapi.fragments.AddFragment
-import com.example.weatherapi.fragments.City
-import com.example.weatherapi.fragments.Weather
-import com.example.weatherapi.fragments.WeatherFragment
+import com.example.weatherapi.fragments.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import com.google.gson.reflect.TypeToken
 
-class MainActivity : AppCompatActivity(), Weather, City {
+class MainActivity : AppCompatActivity(), Weather, City, Communicator {
     var weatherList: ArrayList<DataWeather> = ArrayList<DataWeather>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,5 +75,21 @@ class MainActivity : AppCompatActivity(), Weather, City {
 
     override fun DataCityLoad(): ArrayList<DataCity> {
         return LoadData()
+    }
+
+    override fun PassData(weather: DataWeather) {
+        val bundle = Bundle()
+
+        var gson = Gson()
+        var json = gson.toJson(weather)
+
+        bundle.putString("weather", json)
+
+        val transaction = this.supportFragmentManager.beginTransaction()
+        val accurateWeatherFragment = AccurateWeatherFragment()
+        accurateWeatherFragment.arguments = bundle
+
+        transaction.replace(R.id.fl_wrapper, accurateWeatherFragment)
+        transaction.commit()
     }
 }
