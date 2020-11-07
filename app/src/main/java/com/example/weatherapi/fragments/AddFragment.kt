@@ -2,8 +2,10 @@ package com.example.weatherapi.fragments
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -147,7 +149,9 @@ class AddFragment : Fragment() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
             1f)
-        textName.text = largestElement.toString() + " " + name
+        textName.text = name
+        textName.setTextSize(TypedValue.COMPLEX_UNIT_PX, 50f);
+        textName.setTextColor(Color.parseColor("#303030"))
         list.addView(textName)
 
         var deleteButton = Button(mainContext)
